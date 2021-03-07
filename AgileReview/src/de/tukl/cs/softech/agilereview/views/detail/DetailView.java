@@ -1,10 +1,14 @@
 package de.tukl.cs.softech.agilereview.views.detail;
 
+import java.io.IOException;
 import java.util.Calendar;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -278,9 +282,22 @@ public class DetailView extends ViewPart {
                 if (!(this.currentParent instanceof CommentDetail)) {
                     this.changeParent(DetailView.COMMENT_DETAIL);
                 }
+                try {
+					((CommentDetail) this.currentParent).setFile((IFile) getActiveEditor().getEditorInput().getAdapter(IFile.class));
+				} catch (CoreException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
                 ((CommentDetail) this.currentParent).fillContents((Comment) e);
             }
             refreshBackgroundColor();
         }
+    }
+    
+    /**
+     * @return the currently active editor or null if no editor is active
+     */
+    private IEditorPart getActiveEditor() {
+        return getSite().getPage().getActiveEditor();
     }
 }

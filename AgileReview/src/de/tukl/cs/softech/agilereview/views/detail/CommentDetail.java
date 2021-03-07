@@ -1,13 +1,22 @@
 package de.tukl.cs.softech.agilereview.views.detail;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlCursor;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -25,14 +34,20 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
 
 import agileReview.softech.tukl.de.CommentDocument.Comment;
 import agileReview.softech.tukl.de.ReplyDocument.Reply;
+import de.tukl.cs.softech.agilereview.annotations.AnnotationParser;
 import de.tukl.cs.softech.agilereview.annotations.ColorManager;
 import de.tukl.cs.softech.agilereview.plugincontrol.SourceProvider;
+import de.tukl.cs.softech.agilereview.tools.NoDocumentFoundException;
 import de.tukl.cs.softech.agilereview.tools.PropertiesManager;
+import de.tukl.cs.softech.agilereview.tools.Utils;
+
+import com.google.gson.Gson;
 
 /**
  * The CommentDetail class describes one detail representation of a Comment Object
@@ -71,6 +86,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
      * ScrolledComposite to wrap the replies wrapper component with a scroll bar
      */
     private ScrolledComposite replyScrolledWrapper;
+	private String content;
     
     /**
      * Creates the CommentDetail Composite and creates the initial UI
@@ -241,17 +257,35 @@ public class CommentDetail extends AbstractDetail<Comment> {
      */
     @Override
     protected boolean saveChanges() {
-        if (attributesChanged()) {
-            editedObject.setLastModified(Calendar.getInstance());
-            return true;
-        } else {
-            if (editedObject.getLastModified().equals(editedObject.getCreationDate())) {
-                editedObject.setLastModified(Calendar.getInstance());
-                return true;
-            } else {
-                return false;
-            }
-        }
+    	HashMap<String, String> data = new HashMap<String, String>();
+
+    	data.put("text", editedObject.getText());
+    	data.put("id", editedObject.getId());
+    	data.put("review_id", editedObject.getReviewID());
+    	data.put("author", editedObject.getAuthor());
+    	data.put("status", editedObject.getStatus()+"");
+    	data.put("priority", editedObject.getPriority()+"");
+    	data.put("recipient", editedObject.getRecipient()+"");
+    	data.put("doc", content);
+
+    	try {
+    		System.err.println(Utils.sendPost("33", data, "http://prog.ai:1961/generate"));
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+
+    	if (attributesChanged()) {
+    		editedObject.setLastModified(Calendar.getInstance());
+    		return true;
+    	} else {
+    		if (editedObject.getLastModified().equals(editedObject.getCreationDate())) {
+    			editedObject.setLastModified(Calendar.getInstance());
+    			return true;
+    		} else {
+    			return false;
+    		}
+    	}
     }
     
     /*
@@ -260,6 +294,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
      */
     @Override
     public void fillContents(Comment comment) {
+      	System.err.println("fillContents");
         // XXX @May-Bee: can we do this here? -> need to save one next comment shortcut
         if (editedObject != null && backupObject != null) {
             saveChanges();
@@ -268,6 +303,23 @@ public class CommentDetail extends AbstractDetail<Comment> {
         if (comment != null) {
             this.backupObject = (Comment) comment.copy();
             this.editedObject = comment;
+            
+//            this.editor = editor;
+//            
+//            if (editor.getDocumentProvider() != null) {
+//                this.document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+//                if (this.document == null) {
+//                    throw new NoDocumentFoundException();
+//                }
+//            } else {
+//                throw new NoDocumentFoundException();
+//            }
+//            
+//            // Set the path this Parser stand for
+//            IEditorInput input = this.editor.getEditorInput();
+//            IFile file = (IFile) input.getAdapter(IFile.class);
+//            file.ge
+            
             tagInstance.setText(generateCommentKey(comment));
             tagInstance.setToolTipText(generateCommentKey(comment));
             authorInstance.setText(comment.getAuthor());
@@ -450,5 +502,12 @@ public class CommentDetail extends AbstractDetail<Comment> {
         //get the backupObject as changes should only have impact on the background when they are saved
         return ColorManager.getColor(this.backupObject.getAuthor());
     }
+
+	public void setFile(IFile file) throws CoreException, IOException {
+        // get input from file
+        InputStream is = file.getContents();
+        content = IOUtils.toString(is, StandardCharsets.UTF_8.name());
+        is.close();
+	}
     
 }
