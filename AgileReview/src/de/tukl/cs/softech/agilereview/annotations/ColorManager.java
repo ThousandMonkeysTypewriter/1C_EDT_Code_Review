@@ -79,12 +79,12 @@ public class ColorManager {
      * @return the color which is registered for the given author<br>the default comment color, if no reservation was possible any more
      */
     public static Color getColor(String author) {
-        String prop;
-        if (isMultiColorEnabled() && authors.contains(author)) {
-            prop = PropertiesManager.getPreferences().getString(PropertiesManager.EXTERNAL_KEYS.ANNOTATION_COLORS_AUTHOR[authors.indexOf(author)]);
-        } else {
-            prop = PropertiesManager.getPreferences().getString(PropertiesManager.EXTERNAL_KEYS.ANNOTATION_COLOR);
-        }
+        String prop = "120,183,244";
+//        if (isMultiColorEnabled() && authors.contains(author)) {
+//            prop = PropertiesManager.getPreferences().getString(PropertiesManager.EXTERNAL_KEYS.ANNOTATION_COLORS_AUTHOR[authors.indexOf(author)]);
+//        } else {
+//            prop = PropertiesManager.getPreferences().getString(PropertiesManager.EXTERNAL_KEYS.ANNOTATION_COLOR);
+//        }
         String[] rgb = prop.split(",");
         return new Color(PlatformUI.getWorkbench().getDisplay(), Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
     }

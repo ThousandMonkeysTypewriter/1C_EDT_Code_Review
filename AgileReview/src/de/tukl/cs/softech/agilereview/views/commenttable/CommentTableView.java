@@ -121,8 +121,8 @@ public class CommentTableView extends ViewPart implements IDoubleClickListener {
     /**
      * The titles of the table's columns, also used to fill the filter menu
      */
-    private final String[] titles = { "ReviewName", "CommentID", "Author", "Recipient", "Status", "Priority", "Date created", "Date modified",
-            "Replies", "Location", "Description" };
+    private final String[] titles = { "Имя", "ID коммента", "Автор", "Получатель", "Статус", "Приоритет", "Дата создания", "Дата изменения",
+            "Ответы", "Файл", "Описание" };
     /**
      * The width of the table's columns
      */
@@ -174,9 +174,9 @@ public class CommentTableView extends ViewPart implements IDoubleClickListener {
         } catch (BadLocationException e) {
             PluginLogger.logError(this.getClass().toString(), "addComment", "BadLocationException when trying to add tags", e);
         }
-        
-        // set selection (to display comment in detail view)
-        // getSite().getSelectionProvider().setSelection(new StructuredSelection(comment));
+//        
+//        // set selection (to display comment in detail view)
+//        // getSite().getSelectionProvider().setSelection(new StructuredSelection(comment));
         this.selectComment(comment);
     }
     

@@ -109,7 +109,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
         this.setLayout(gridLayout);
         
         Label tagID = new Label(this, SWT.NONE);
-        tagID.setText("Tag-ID: ");
+        tagID.setText("Тэг: ");
         super.bgComponents.add(tagID);
         
         tagInstance = new Text(this, SWT.WRAP);
@@ -121,7 +121,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
         super.bgComponents.add(tagInstance);
         
         Label author = new Label(this, SWT.PUSH);
-        author.setText("Author: ");
+        author.setText("Автор: ");
         super.bgComponents.add(author);
         
         authorInstance = new Text(this, SWT.WRAP);
@@ -133,7 +133,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
         super.bgComponents.add(authorInstance);
         
         Label status = new Label(this, SWT.PUSH);
-        status.setText("Status: ");
+        status.setText("Статус: ");
         super.bgComponents.add(status);
         
         statusDropDown = new Combo(this, SWT.DROP_DOWN | SWT.BORDER | SWT.PUSH);
@@ -146,7 +146,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
         super.bgComponents.add(statusDropDown);
         
         Label priority = new Label(this, SWT.PUSH);
-        priority.setText("Priority: ");
+        priority.setText("Важность: ");
         super.bgComponents.add(priority);
         
         priorityDropDown = new Combo(this, SWT.DROP_DOWN | SWT.BORDER | SWT.PUSH);
@@ -159,7 +159,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
         super.bgComponents.add(priorityDropDown);
         
         Label recipient = new Label(this, SWT.PUSH);
-        recipient.setText("Recipient: ");
+        recipient.setText("Получатель: ");
         super.bgComponents.add(recipient);
         
         recipientText = new Text(this, SWT.BORDER | SWT.SINGLE | SWT.WRAP);
@@ -178,7 +178,7 @@ public class CommentDetail extends AbstractDetail<Comment> {
         gridData.horizontalAlignment = GridData.FILL;
         gridData.horizontalSpan = numColumns;
         caption.setLayoutData(gridData);
-        caption.setText("Description / Replys:");
+        caption.setText("Дополнительное описание:");
         super.bgComponents.add(caption);
         
         SashForm sashArea = new SashForm(this, SWT.VERTICAL);
